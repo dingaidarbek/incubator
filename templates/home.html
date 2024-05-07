@@ -3,6 +3,23 @@
 {% block title %}Home Page{% endblock %}
 
 {% block home %}active{% endblock %}
+
+{% block pageName %}Home{% endblock %}
+
 {% block content %}
-<h1>Testing</h1>
+<div class="col-lg-4">
+    {% block album %}
+    {% endblock %}
+</div>
+<div class="col-lg-4">
+    <ul>
+        {% for item in data %}
+            <li>{{item.name}}</li>
+            <li>{{item.url}}</li>
+        {% endfor %}
+        </ul>
+
+</div>
+<div class="col-lg-4">Album 3</div>
+
 {% endblock %}

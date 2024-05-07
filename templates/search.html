@@ -2,6 +2,23 @@
 {% block title %}Search Page{% endblock %}
 
 {% block search %}active{% endblock %}
+
+{% block pageName %}Search{% endblock %}
+
 {% block content %}
-<p> Search </p>
+<form action = "#" class="form-inline my-2 my-lg-0" method = "POST">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name ="searching">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick = "showResults()">Search</button>
+  </form>
+<div>
+  <ul>
+    {% for item in results %}
+            <image src = "{{item.image[2]["#text"]}}"/>
+            <li>Album name: {{item.name}}</li>
+            <li>Artist: {{item.artist}}</li><br>
+    
+        {% endfor %}
+  </ul>
+</div>
+
 {% endblock %}

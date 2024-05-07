@@ -1,17 +1,24 @@
-from flask import Flask, redirect, url_for, render_template, request
+from flask import Flask, redirect, url_for, render_template, request, session
 import json
+import requests
+from datetime import timedelta
 
 app = Flask(__name__)
+APIkey = "50c2996de269e50e205547980513a419"
+app.secret_key = "hello"
+app.permanent_session_lifetime = timedelta(minutes=5)
 
-@app.route("/")
+    
+@app.route("/", methods=["POST", "GET"])
 def home():
-    return render_template("home.html")
+    APIrequest = f"http://ws.audioscrobbler.com/2.0/?method=album.gettoptags&artist=radiohead&album=the%20bends&api_key={APIkey}&format=json"
+    file = requests.get(APIrequest)
+    return render_template("home.html", data = file.json()["toptags"]["tag"])
 
 
 @app.route("/registration", methods=["POST", "GET"])
 def registration():
     if request.method == "POST":
-
         login = request.form["login"]
         password = request.form["password"]
         repeatPassword = request.form["repeatPassword"]
@@ -55,9 +62,21 @@ def login():
 def user(usr):
     return f"<h1>{usr}</h1>"
 
-@app.route("/search")
+@app.route("/search", methods=["POST", "GET"])
 def search():
-    return render_template("search.html")
+    if request.method == "POST":
+        search = request.form.get("searching", False)
+        APIrequest = f"http://ws.audioscrobbler.com/2.0/?method=album.search&album={search}&api_key={APIkey}&format=json"
+        file = requests.get(APIrequest)
+        return render_template("search.html", results = file.json()["results"]["albummatches"]["album"])
+    else:
+        return render_template("search.html")
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('index'))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
