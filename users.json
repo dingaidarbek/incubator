@@ -1,4 +1,22 @@
-{
-    "login": "223",
-    "password": "124"
-}
+[
+    {
+        "login": "nuka",
+        "password": "zatestim23"
+    },
+    {
+        "login": "dimash ",
+        "password": "developer"
+    },
+    {
+        "login": "    ",
+        "password": "      "
+    },
+    {
+        "login": "",
+        "password": ""
+    },
+    {
+        "login": 1324654827754070454,
+        "password": -5263026059706894193
+    }
+]

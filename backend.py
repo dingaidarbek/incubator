@@ -11,13 +11,21 @@ def home():
 @app.route("/registration", methods=["POST", "GET"])
 def registration():
     if request.method == "POST":
+
         login = request.form["login"]
         password = request.form["password"]
-        userAccount = {'login': login, 'password':password}
-        with open("users.json", "w") as users:  
-            users.write(json.dumps(userAccount,indent=4))
+        userAccount = {'login': hash(login.strip()), 'password':hash(password.strip())}
+
+        with open("users.json") as users:  
+            usersJson = json.load(users)
+
+        usersJson.append(userAccount)
+
+        with open("users.json", 'w') as json_file:
+            json.dump(usersJson, json_file, indent=4, separators=(',',': '))
 
         return redirect(url_for("user", usr="dimash"))
+    
     else:
         return render_template("registration.html")
 
