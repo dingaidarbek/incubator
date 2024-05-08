@@ -8,7 +8,6 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import os
 import http.client
 from datetime import datetime
-import html
 
 os.environ["SPOTIPY_CLIENT_ID"] = '895ebdcb42a240fd906aebb862a08646'
 os.environ["SPOTIPY_CLIENT_SECRET"] = 'c415b1d0d68f425191af25f1fa934ea7'
