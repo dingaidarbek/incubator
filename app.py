@@ -28,7 +28,6 @@ def home():
     if request.method == "POST":
         return redirect(url_for("album", albumID = request.form.get("getAlbumID")))
     else:
-        # APIrequest = "https://api.spotify.com/v1/browse/new-releases"
         sp = spotipy.Spotify(client_credentials_manager = SpotifyClientCredentials())
         file = sp.new_releases()
         return render_template("home.html", data = file["albums"]["items"])
@@ -104,7 +103,7 @@ def logout():
     session["user"] = None
     return redirect(url_for('login'))
 
-@app.route('/album?albumID=<albumID>', methods=["POST", "GET"])
+@app.route('/album/<albumID>', methods=["POST", "GET"])
 def album(albumID):
     APIrequest = "https://open.spotify.com/oembed?url=https%3A%2F%2Fopen.spotify.com%2Falbum%2F" + albumID
     file = requests.get(APIrequest)
