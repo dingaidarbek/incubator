@@ -1,26 +1,52 @@
-<DOCTYPE html>
+<doctype html>
+
 <html>
     <head>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <title>{% block title %}{% endblock %}</title>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <title>{% block title %}{% endblock %}</title>
 
-    <style>
-      body{
-        background-color: #090909;
-        padding: 15px 25px 15px 25px;
-        color: white;
-      }
-      .text-center{
-        color: red;
-      }
-      #navbar{
+      <style>
+        body{
+          background-color: #090909;
+          padding: 15px 25px 15px 25px;
+          color: white;
+        }
+        .text-center{
+          color: red;
+        }
+        #navbar{
 
-      }
+        }
 
-    </style>
+      </style>
     </head>
 
     <body>
+      <script>
+        window.onload = function(){
+        var client_id = '895ebdcb42a240fd906aebb862a08646';
+        var client_secret = 'c415b1d0d68f425191af25f1fa934ea7';
+
+        var authOptions = {
+          url: 'https://accounts.spotify.com/api/token',
+          headers: {
+            'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64'))
+          },
+          form: {
+            grant_type: 'client_credentials'
+          },
+          json: true
+        };
+
+        request.post(authOptions, function(error, response, body) {
+          if (!error && response.statusCode === 200) {
+            var token = body.access_token;
+          }
+          
+        });}
+        
+</script>
       <div class = "text-center">
           <div class="row" style = "height: 100%">
             <div class="col-lg-2" style = "background-color: #0f172a; position: static;border-radius: 15px;padding: 0px 5px 0px 0px">

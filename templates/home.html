@@ -7,19 +7,16 @@
 {% block pageName %}Home{% endblock %}
 
 {% block content %}
-<div class="col-lg-4">
-    {% block album %}
-    {% endblock %}
-</div>
-<div class="col-lg-4">
-    <ul>
-        {% for item in data %}
-            <li>{{item.name}}</li>
-            <li>{{item.url}}</li>
-        {% endfor %}
-        </ul>
 
-</div>
-<div class="col-lg-4">Album 3</div>
+        {% for item in data %}
+        <div>
+        <form action = "#" method = "POST">
+        <image src = {{item.images[0]["url"]}}></image>
+        <p>{{item.name}}</p>
+        <input type = "submit" name = "getAlbumID" value = "{{item.id}}">
+        </form>
+    </div>
+        {% endfor %}
+
 
 {% endblock %}

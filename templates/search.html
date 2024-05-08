@@ -8,17 +8,33 @@
 {% block content %}
 <form action = "#" class="form-inline my-2 my-lg-0" method = "POST">
     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name ="searching">
-    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick = "showResults()">Search</button>
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick = "getProfile(895ebdcb42a240fd906aebb862a08646)">Search</button>
   </form>
 <div>
   <ul>
     {% for item in results %}
-            <image src = "{{item.image[2]["#text"]}}"/>
-            <li>Album name: {{item.name}}</li>
-            <li>Artist: {{item.artist}}</li><br>
-    
-        {% endfor %}
+    <div>
+      <form action = "#" method = "POST">
+      <image src = {{item.images[1]["url"]}}></image>
+      <p>{{item.name}}</p>
+      <input type = "submit" name = "getAlbumID" value = "{{item.id}}">
+      </form>
+    </div>
+    {% endfor %}
   </ul>
 </div>
 
+<script>
+    async function getProfile(accessToken) {
+        let accessToken = localStorage.getItem('access_token');
+      
+        const response = await fetch('https://api.spotify.com/v1/me', {
+          headers: {
+            Authorization: 'Bearer ' + accessToken
+          }
+        });
+      
+        const data = await response.json();
+      }
+</script>
 {% endblock %}
