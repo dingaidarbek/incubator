@@ -2,7 +2,6 @@ Flask
 requests
 datetime
 spotipy
-spotipy.oauth2
 os
 http.client
 datetime
