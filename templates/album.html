@@ -1,13 +1,21 @@
 {% extends "base.html" %}
 
 {% block pageName %}Album information{% endblock %}
+{% block title %}Album information{% endblock %}
+
 {% block content %}
-{{data}}
+
+{{data["html"] | safe}}
 <div>
     {% for userComment in comments %}
-    <div style = "background: rgba(128, 128, 128, 0.2);">
-        <p>{{userComment.userLogin}} {{userComment.date}}</p>
-        <p>{{userComment.comment}}</p>
+    <div style = "background: rgba(128, 128, 128, 0.2); border-radius: 5px">
+        <style scoped>
+            p{
+                padding: 0 0 0 5px;
+            }
+        </style>
+        <p style = "padding 5px 0 0 0">{{userComment.userLogin}} {{userComment.date}}</p>
+        <p style = "padding 0 0 5px 0">{{userComment.comment}}</p>
     </div>
     {% endfor%}
 </div>
@@ -20,6 +28,8 @@
       <input name="submit" type="submit" value="Submit comment" />
     </form>
   </div>
+
+  
 <script>
     function convert_text_to_HTML(txt) {
         // Output variable

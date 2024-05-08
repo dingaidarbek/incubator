@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Account{% endblock %}
+
+{% block pageName %}Account{% endblock %}
+
+{% block account %}active{% endblock %}
+
+{% block content %}
+<p> You are currently logged in as {{account}} </p>
+<a href = "/logout">Logout </a>
+{% endblock%}

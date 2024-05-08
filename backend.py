@@ -8,6 +8,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import os
 import http.client
 from datetime import datetime
+import html
 
 os.environ["SPOTIPY_CLIENT_ID"] = '895ebdcb42a240fd906aebb862a08646'
 os.environ["SPOTIPY_CLIENT_SECRET"] = 'c415b1d0d68f425191af25f1fa934ea7'
@@ -58,8 +59,8 @@ def registration():
         password = request.form["password"]
         repeatPassword = request.form["repeatPassword"]
         if password == repeatPassword:
-            # userAccount = {'login': hash(login.strip()), 'password':hash(password.strip())} #with encoding
-            userAccount = {'login': login.strip(), 'password':password.strip()} # without encoding
+            userAccount = {'login': hash(login.strip()), 'password':hash(password.strip())} #with encoding
+            #userAccount = {'login': login.strip(), 'password':password.strip()} # without encoding
             with open("users.json") as users:  
                 usersJson = json.load(users)
 
@@ -68,7 +69,10 @@ def registration():
             with open("users.json", 'w') as json_file:
                 json.dump(usersJson, json_file, indent=4, separators=(',',': '))
 
-            return redirect(url_for("user", usr=login))
+            session.permanent = True
+            session["user"] = login
+
+            return redirect(url_for("home"))
         else:
             return "password does not match" + render_template("registration.html")
     else:
@@ -90,7 +94,7 @@ def login():
         for user in usersJson:
             if user["login"] == login:
                 if user["password"] == password:
-                            return redirect(url_for("user", usr=login))
+                            return redirect(url_for("account"))
     else:
         return render_template("login.html")
     
@@ -119,8 +123,8 @@ def search():
 
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
-    return redirect(url_for('index'))
+    session["user"] = None
+    return redirect(url_for('login'))
 
 @app.route('/album?albumID=<albumID>', methods=["POST", "GET"])
 def album(albumID):
@@ -138,7 +142,10 @@ def album(albumID):
             commentsSection = commentsJson[albumID]
     
     if request.method == "POST" and "comment" in request.form:
-        newComment = {"userLogin":request.form.get("login", "NOLOGIN"), "date": str(datetime.now())[:16], "comment":request.form.get("comment", "NOCOMMENT")}
+        if "user" not in session or session["user"] == None:
+            newComment = {"userLogin":"Anonym", "date": str(datetime.now())[:16], "comment":request.form.get("comment", "NOCOMMENT")}
+        else:
+            newComment = {"userLogin":session["user"], "date": str(datetime.now())[:16], "comment":request.form.get("comment", "NOCOMMENT")}
         
         with open("comments.json") as comments:
             commentsJson = json.load(comments)
@@ -149,7 +156,8 @@ def album(albumID):
 
         with open("comments.json", 'w') as json_file:
             json.dump(commentsJson, json_file, indent=4, separators=(',',': '))
-    return render_template("album.html", data = file.json()["html"], comments = commentsSection)
+            
+    return render_template("album.html", data = file.json(), comments = commentsSection)
 
 # @app.route('/authorize')
 # def authorize():
@@ -178,6 +186,12 @@ def str_to_dict(string):
     # the dictionary, converting the values to
     # integers and removing the quotes from the keys
     return {key[1:-2]: int(value) for key, value in (pair.split(': ') for pair in pairs)}
+
+@app.route('/account')
+def account():
+    if "user" not in session or session["user"] == None:
+        return redirect(url_for('login'))
+    return render_template("account.html", account = session["user"])
 
 if __name__ == "__main__":
         app.run(debug=True)
