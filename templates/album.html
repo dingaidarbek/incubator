@@ -28,40 +28,4 @@
       <input name="submit" type="submit" value="Submit comment" />
     </form>
   </div>
-
-  
-<script>
-    function convert_text_to_HTML(txt) {
-        // Output variable
-        let out = '';
-        // Split text at the newline character into an array
-        const txt_array = txt.split("\n");
-        // Get the number of lines in the array
-        const txt_array_length = txt_array.length;
-        // Variable to keep track of the (non-blank) line number
-        let non_blank_line_count = 0;
-        
-        for (let i = 0; i < txt_array_length; i++) {
-          // Get the current line
-          const line = txt_array[i];
-          // Continue if a line contains no text characters
-          if (line === ''){
-            continue;
-          }
-          
-          non_blank_line_count++;
-          // If a line is the first line that contains text
-          if (non_blank_line_count === 1){
-            // ...wrap the line of text in a Heading 1 tag
-            out += `<h1>${line}</h1>`;
-            // ...otherwise, wrap the line of text in a Paragraph tag.
-          } else {
-            out += `<p>${line}</p>`;
-          }
-        }
-      
-        return out;
-      }
-      
-</script>
 {% endblock %}
