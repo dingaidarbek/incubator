@@ -1,5 +1,4 @@
 Flask
-json
 requests
 datetime
 spotipy
