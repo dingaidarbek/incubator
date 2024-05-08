@@ -10,9 +10,9 @@
     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name ="searching">
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick = "getProfile(895ebdcb42a240fd906aebb862a08646)">Search</button>
   </form>
-<div style = "display: grid;grid-template-columns: repeat(3, 1fr); border: black">
+<div style = "display: grid;grid-template-columns: repeat(3, 1fr); border: black;grid-row-gap: 20px;">
     {% for item in results %}
-    <div style = "padding: 10px">
+    <div style = "padding: 10px;width: 85%;height: auto;margin: auto auto;padding: 10px; position: relative;border-radius:20px;background: rgba(128, 128, 128, 0.2)"">
       <form action = "#" method = "POST">
       <image src = {{item.images[1]["url"]}}></image>
       <p>{{item.name}}</p>

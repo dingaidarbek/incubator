@@ -5,7 +5,6 @@ from datetime import timedelta
 # Spotify API wrapper, documentation here: http://spotipy.readthedocs.io/en/latest/
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-from spotipy.oauth2 import SpotifyOAuth
 import os
 import http.client
 from datetime import datetime
@@ -15,8 +14,7 @@ os.environ["SPOTIPY_CLIENT_SECRET"] = 'c415b1d0d68f425191af25f1fa934ea7'
 
 
 # Authenticate with Spotify using the Client Credentials flow
-client_credentials_manager = SpotifyClientCredentials()
-sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+sp = spotipy.Spotify(client_credentials_manager = SpotifyClientCredentials())
 
 app = Flask(__name__)
 APIkey = "50c2996de269e50e205547980513a419"
@@ -29,12 +27,10 @@ def home():
     if request.method == "POST":
         return redirect(url_for("album", albumID = request.form.get("getAlbumID")))
     else:
-        APIrequest = "https://api.spotify.com/v1/browse/new-releases"
-        with open(".cache", "r") as tokenFile:
-            token = json.load(tokenFile)["access_token"]
-            headers = { 'authorization': f"Bearer {token}" }
-            file = requests.get(APIrequest, headers=headers)
-        return render_template("home.html", data = file.json()["albums"]["items"])
+        # APIrequest = "https://api.spotify.com/v1/browse/new-releases"
+        sp = spotipy.Spotify(client_credentials_manager = SpotifyClientCredentials())
+        file = sp.new_releases()
+        return render_template("home.html", data = file["albums"]["items"])
 
 
 @app.route("/registration", methods=["POST", "GET"])
@@ -93,12 +89,10 @@ def search():
             return render_template("search.html")
         search = request.form.get("searching", False)
         APIrequest = f"https://api.spotify.com/v1/search?q={search}&type=album"
-        with open(".cache", "r") as tokenFile:
-            token = json.load(tokenFile)["access_token"]
-            conn = http.client.HTTPSConnection("")
-            headers = { 'authorization': f"Bearer {token}" }
-            file = requests.get(APIrequest, headers=headers)
-        return render_template("search.html", results = file.json()["albums"]["items"])
+        sp = spotipy.Spotify(client_credentials_manager = SpotifyClientCredentials())
+        file = sp.search(search, type= "album")
+
+        return render_template("search.html", results = file["albums"]["items"])
     elif request.method == "POST" and "getAlbumID" in request.form:
         return redirect(url_for("album", albumID = request.form.get("getAlbumID")))
     else:
