@@ -16,7 +16,8 @@
       <form action = "#" method = "POST">
       <image src = {{item.images[1]["url"]}}></image>
       <p>{{item.name}}</p>
-      <input type = "submit" name = "getAlbumID" value = "{{item.id}}">
+      <input type = "hidden" name = "getAlbumID" value = "{{item.id}}">
+      <input type = "submit" value = "Подробнее" style = "background-color: ">
       </form>
     </div>
     {% endfor %}

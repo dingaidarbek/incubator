@@ -48,7 +48,7 @@ def home():
             # data = res.read()
             # dataResult = data.decode("utf-8")
         # finalDict = str_to_dict(dataResult)
-        return render_template("home.html", data = file.json()["albums"]["items"]) + str(file.json()["albums"]["items"])
+        return render_template("home.html", data = file.json()["albums"]["items"])
 
 
 @app.route("/registration", methods=["POST", "GET"])
@@ -110,7 +110,7 @@ def search():
             conn = http.client.HTTPSConnection("")
             headers = { 'authorization': f"Bearer {token}" }
             file = requests.get(APIrequest, headers=headers)
-        return render_template("search.html", results = file.json()["albums"]["items"]) + str(file.json()["albums"]["items"])
+        return render_template("search.html", results = file.json()["albums"]["items"])
         # return render_template("search.html", results = file.json()["results"]["albummatches"]["album"])
     elif request.method == "POST" and "getAlbumID" in request.form:
         return redirect(url_for("album", albumID = request.form.get("getAlbumID")))
@@ -129,12 +129,13 @@ def album(albumID):
         token = json.load(tokenFile)["access_token"]
         conn = http.client.HTTPSConnection("")
         headers = { 'authorization': f"Bearer {token}" }
-        
         file = requests.get(APIrequest, headers=headers)
-    with open("comments.json", "r") as comments:
-        commentsSection = dict()
-        if albumID in comments: 
-            commentsSection = comments[albumID]
+
+    with open("comments.json") as comments:
+        commentsJson = json.load(comments)
+        commentsSection = []
+        if albumID in commentsJson: 
+            commentsSection = commentsJson[albumID]
     
     if request.method == "POST" and "comment" in request.form:
         newComment = {"userLogin":request.form.get("login", "NOLOGIN"), "date": str(datetime.now())[:16], "comment":request.form.get("comment", "NOCOMMENT")}

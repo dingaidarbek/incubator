@@ -7,16 +7,18 @@
 {% block pageName %}Home{% endblock %}
 
 {% block content %}
-
+    <div style = "display: grid;grid-template-columns: repeat(3, 1fr); border: black">
         {% for item in data %}
         <div class = "">
-        <form action = "#" method = "POST">
-        <image src = {{item.images[0]["url"]}}></image>
-        <p>{{item.name}}</p>
-        <input type = "submit" name = "getAlbumID" value = "{{item.id}}">
-        </form>
-    </div>
+            <form action = "#" method = "POST">
+                <image src = {{item.images[0]["url"]}}></image>
+                <p>{{item.name}}</p>
+                <input type = "hidden" name = "getAlbumID" value = "{{item.id}}">
+                <input type = "submit" value = "Подробнее">
+            </form>
+        </div>
         {% endfor %}
+    </div>
 
 
 {% endblock %}

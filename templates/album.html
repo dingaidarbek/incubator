@@ -3,17 +3,22 @@
 {% block pageName %}Album information{% endblock %}
 {% block content %}
 {{data}}
-<div id="respond" style = "padding: 25px">
+<div>
+    {% for userComment in comments %}
+    <div style = "background: rgba(128, 128, 128, 0.2);">
+        <p>{{userComment.userLogin}} {{userComment.date}}</p>
+        <p>{{userComment.comment}}</p>
+    </div>
+    {% endfor%}
+</div>
 
+<div id="respond" style = "padding: 25px">
     <h3>Leave a Comment</h3>
-  
     <form action="#" method="post" id="commentform">
       <label for="comment" class="required">Your message</label>
       <input type = "text" name = "comment"></input>
       <input name="submit" type="submit" value="Submit comment" />
-  
     </form>
-  
   </div>
 <script>
     function convert_text_to_HTML(txt) {
