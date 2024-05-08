@@ -5,6 +5,7 @@ from datetime import timedelta
 # Spotify API wrapper, documentation here: http://spotipy.readthedocs.io/en/latest/
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
+from spotipy.oauth2 import SpotifyOAuth
 import os
 import http.client
 from datetime import datetime
@@ -22,32 +23,17 @@ APIkey = "50c2996de269e50e205547980513a419"
 app.secret_key = "hello"
 app.permanent_session_lifetime = timedelta(minutes=5)
 
-
+response = sp.new_releases()
 @app.route("/", methods=["POST", "GET"])
 def home():
     if request.method == "POST":
         return redirect(url_for("album", albumID = request.form.get("getAlbumID")))
     else:
-        # Use the country from the query parameters, if provided
-        if 'country' in request.args:
-            country = request.args['country']
-        else:
-            country = 'SE'      
-        # Send request to the Spotify API
-        new_releases = sp.new_releases(country=country, limit=20, offset=0)
-        # Return the list of new releases
-        # return jsonify(new_releases)
         APIrequest = "https://api.spotify.com/v1/browse/new-releases"
         with open(".cache", "r") as tokenFile:
             token = json.load(tokenFile)["access_token"]
-            conn = http.client.HTTPSConnection("")
             headers = { 'authorization': f"Bearer {token}" }
-            # conn.request("GET","https://api.spotify.com/v1/", "me", headers=headers)
             file = requests.get(APIrequest, headers=headers)
-            # res = conn.getresponse()
-            # data = res.read()
-            # dataResult = data.decode("utf-8")
-        # finalDict = str_to_dict(dataResult)
         return render_template("home.html", data = file.json()["albums"]["items"])
 
 
@@ -59,7 +45,6 @@ def registration():
         repeatPassword = request.form["repeatPassword"]
         if password == repeatPassword:
             userAccount = {'login': hash(login.strip()), 'password':hash(password.strip())} #with encoding
-            #userAccount = {'login': login.strip(), 'password':password.strip()} # without encoding
             with open("users.json") as users:  
                 usersJson = json.load(users)
 
@@ -114,7 +99,6 @@ def search():
             headers = { 'authorization': f"Bearer {token}" }
             file = requests.get(APIrequest, headers=headers)
         return render_template("search.html", results = file.json()["albums"]["items"])
-        # return render_template("search.html", results = file.json()["results"]["albummatches"]["album"])
     elif request.method == "POST" and "getAlbumID" in request.form:
         return redirect(url_for("album", albumID = request.form.get("getAlbumID")))
     else:
@@ -130,7 +114,6 @@ def album(albumID):
     APIrequest = "https://open.spotify.com/oembed?url=https%3A%2F%2Fopen.spotify.com%2Falbum%2F" + albumID
     with open(".cache", "r") as tokenFile:
         token = json.load(tokenFile)["access_token"]
-        conn = http.client.HTTPSConnection("")
         headers = { 'authorization': f"Bearer {token}" }
         file = requests.get(APIrequest, headers=headers)
 
@@ -158,22 +141,7 @@ def album(albumID):
             
     return render_template("album.html", data = file.json(), comments = commentsSection)
 
-# @app.route('/authorize')
-# def authorize():
-#   client_id = app.config['CLIENT_ID']
-#   redirect_uri = app.config['REDIRECT_URI']
-#   scope = app.config['SCOPE']
-#   state_key = createStateKey(15)
-#   session['state_key'] = state_key
 
-#   authorize_url = 'https://accounts.spotify.com/en/authorize?'
-#   params = {'response_type': 'code', 'client_id': client_id,
-#             'redirect_uri': redirect_uri, 'scope': scope, 
-#             'state': state_key}
-#   query_params = urlencode(params)
-#   return redirect(authorize_url + query_params)
-
-    return False
 def str_to_dict(string):
     # remove the curly braces from the string
     string = string.strip('{}')
