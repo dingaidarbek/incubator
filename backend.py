@@ -7,6 +7,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import os
 import http.client
+from datetime import datetime
 
 os.environ["SPOTIPY_CLIENT_ID"] = '895ebdcb42a240fd906aebb862a08646'
 os.environ["SPOTIPY_CLIENT_SECRET"] = 'c415b1d0d68f425191af25f1fa934ea7'
@@ -76,12 +77,15 @@ def registration():
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
+        session.permanent = True
         login = request.form["login"]
         password = request.form["password"]
         userAccount = {'login': hash(login.strip()), 'password':hash(password.strip())}
 
         with open("users.json") as users:  
             usersJson = json.load(users)
+
+        session["user"] = login
 
         for user in usersJson:
             if user["login"] == login:
@@ -97,6 +101,8 @@ def user(usr):
 @app.route("/search", methods=["POST", "GET"])
 def search():
     if request.method == "POST" and "searching" in request.form:
+        if "searching" == "":
+            return render_template("search.html")
         search = request.form.get("searching", False)
         APIrequest = f"https://api.spotify.com/v1/search?q={search}&type=album"
         with open(".cache", "r") as tokenFile:
@@ -123,8 +129,26 @@ def album(albumID):
         token = json.load(tokenFile)["access_token"]
         conn = http.client.HTTPSConnection("")
         headers = { 'authorization': f"Bearer {token}" }
+        
         file = requests.get(APIrequest, headers=headers)
-    return render_template("album.html", data = file.json()["html"]) + str(file.json()["html"])
+    with open("comments.json", "r") as comments:
+        commentsSection = dict()
+        if albumID in comments: 
+            commentsSection = comments[albumID]
+    
+    if request.method == "POST" and "comment" in request.form:
+        newComment = {"userLogin":request.form.get("login", "NOLOGIN"), "date": str(datetime.now())[:16], "comment":request.form.get("comment", "NOCOMMENT")}
+        
+        with open("comments.json") as comments:
+            commentsJson = json.load(comments)
+        if albumID in commentsJson:
+            commentsJson[albumID].append(newComment)
+        else:
+            commentsJson[albumID] = [newComment]
+
+        with open("comments.json", 'w') as json_file:
+            json.dump(commentsJson, json_file, indent=4, separators=(',',': '))
+    return render_template("album.html", data = file.json()["html"], comments = commentsSection)
 
 # @app.route('/authorize')
 # def authorize():

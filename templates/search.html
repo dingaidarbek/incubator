@@ -10,10 +10,9 @@
     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name ="searching">
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick = "getProfile(895ebdcb42a240fd906aebb862a08646)">Search</button>
   </form>
-<div>
-  <ul>
+<div style = "display: grid;grid-template-columns: repeat(3, 1fr); border: black">
     {% for item in results %}
-    <div>
+    <div style = "padding: 10px">
       <form action = "#" method = "POST">
       <image src = {{item.images[1]["url"]}}></image>
       <p>{{item.name}}</p>
@@ -21,7 +20,6 @@
       </form>
     </div>
     {% endfor %}
-  </ul>
 </div>
 
 <script>
