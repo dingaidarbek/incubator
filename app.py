@@ -8,6 +8,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import os
 import http.client
 from datetime import datetime
+import sys
 
 os.environ["SPOTIPY_CLIENT_ID"] = '895ebdcb42a240fd906aebb862a08646'
 os.environ["SPOTIPY_CLIENT_SECRET"] = 'c415b1d0d68f425191af25f1fa934ea7'
@@ -106,11 +107,7 @@ def logout():
 @app.route('/album?albumID=<albumID>', methods=["POST", "GET"])
 def album(albumID):
     APIrequest = "https://open.spotify.com/oembed?url=https%3A%2F%2Fopen.spotify.com%2Falbum%2F" + albumID
-    with open(".cache", "r") as tokenFile:
-        token = json.load(tokenFile)["access_token"]
-        headers = { 'authorization': f"Bearer {token}" }
-        file = requests.get(APIrequest, headers=headers)
-
+    file = requests.get(APIrequest)
     with open("comments.json") as comments:
         commentsJson = json.load(comments)
         commentsSection = []
